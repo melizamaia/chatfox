@@ -1,0 +1,1 @@
+# Importante para WebSockets (Django Channels)

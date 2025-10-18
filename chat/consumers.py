@@ -1,0 +1,1 @@
+ # WebSocket handlers (usado com Django Channels)
