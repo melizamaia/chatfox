@@ -1,0 +1,59 @@
+# =====================
+# Python / Django
+# =====================
+
+# Ambientes virtuais
+.venv/
+env/
+venv/
+
+# Compilações e caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Banco de dados local
+db.sqlite3
+
+# Logs
+*.log
+
+# Configurações locais e variáveis de ambiente
+.env
+.envrc
+
+# Diretórios temporários
+tmp/
+temp/
+
+# =====================
+# IDEs / Editores
+# =====================
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# =====================
+# Testes / Coverage
+# =====================
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+
+# =====================
+# Docker
+# =====================
+*.pid
+*.tar
+docker-compose.override.yml
+
+# =====================
+# Build / Distribuição
+# =====================
+build/
+dist/
+*.egg-info/
