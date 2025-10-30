@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ChatFox – Teste WebSocket</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        max-width: 900px;
+        margin: 20px auto;
+      }
+      textarea {
+        width: 100%;
+      }
+      #log {
+        height: 180px;
+      }
+      .row {
+        margin-bottom: 1rem;
+      }
+      label {
+        font-weight: 600;
+      }
+      .ok {
+        color: green;
+      }
+      .err {
+        color: red;
+      }
+      .status {
+        padding: 4px 8px;
+        border-radius: 6px;
+        background: #eee;
+        display: inline-block;
+        margin-left: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>ChatFox – Teste de WebSocket autenticado</h1>
+
+    <p>
+      ✅ Backend Django está ok.<br />
+      ✅ JWT está ok (você já conseguiu o <code>access</code>).<br />
+      👉 Agora vamos só conectar no WebSocket usando o token.
+    </p>
+
+    <div class="row">
+      <label for="token">Token JWT (access):</label><br />
+      <textarea id="token" rows="3" placeholder="cole aqui o access token que veio do /api/auth/login/"></textarea>
+    </div>
+
+    <div class="row">
+      <label for="room">Sala:</label><br />
+      <input id="room" value="sala1" />
+    </div>
+
+    <div class="row">
+      <button id="connect">Conectar WS</button>
+      <button id="disconnect">Desconectar</button>
+      <span id="status" class="status">desconectado</span>
+    </div>
+
+    <div class="row">
+      <label for="log">Mensagens:</label><br />
+      <textarea id="log" readonly></textarea>
+    </div>
+
+    <div class="row">
+      <input id="msg" type="text" placeholder="Mensagem..." style="width: 80%" />
+      <button id="send">Enviar</button>
+    </div>
+
+    <p>
+      Dica: abra essa página em duas abas diferentes, conecte nas duas com o mesmo token e mesma sala,
+      e mande mensagem — você vai ver chegando nas duas.
+    </p>
+
+    <script>
+      let ws = null;
+
+      function appendLog(text) {
+        const log = document.getElementById("log");
+        log.value += text + "\n";
+        log.scrollTop = log.scrollHeight;
+      }
+
+      document.getElementById("connect").onclick = function () {
+        const token = document.getElementById("token").value.trim();
+        const room = document.getElementById("room").value.trim() || "sala1";
+
+        if (!token) {
+          alert("Cole o access token primeiro.");
+          return;
+        }
+
+        // monta a URL do WebSocket
+        const wsUrl = `ws://${window.location.host}/ws/chat/${room}/?token=${token}`;
+        appendLog("🔗 conectando em: " + wsUrl);
+
+        ws = new WebSocket(wsUrl);
+
+        ws.onopen = function () {
+          document.getElementById("status").textContent = "✅ conectado";
+          document.getElementById("status").style.background = "#d6ffcf";
+          appendLog("✅ conectado ao WebSocket");
+        };
+
+        ws.onmessage = function (event) {
+          appendLog("📩 " + event.data);
+        };
+
+        ws.onclose = function (event) {
+          document.getElementById("status").textContent = "❌ desconectado";
+          document.getElementById("status").style.background = "#ffe0e0";
+          appendLog("❌ conexão fechada");
+        };
+
+        ws.onerror = function (event) {
+          appendLog("⚠️ erro no WebSocket (veja o terminal do Django)");
+        };
+      };
+
+      document.getElementById("disconnect").onclick = function () {
+        if (ws) {
+          ws.close();
+          ws = null;
+        }
+      };
+
+      document.getElementById("send").onclick = function () {
+        if (!ws || ws.readyState !== WebSocket.OPEN) {
+          alert("WebSocket não está conectado.");
+          return;
+        }
+        const msg = document.getElementById("msg").value;
+        ws.send(JSON.stringify({ message: msg }));
+        document.getElementById("msg").value = "";
+      };
+    </script>
+  </body>
+</html>
