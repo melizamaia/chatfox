@@ -189,8 +189,7 @@ chatfox/
 ## 👩‍💻 Autora
 
 **Meliza Maia**  
-💼 Desenvolvedora Backend e Analista de Dados  
-🌐 [github.com/melizamaia](https://github.com/melizamaia)  
+💼 Desenvolvedora Backend  
 📧 melizamaia@gmail.com
 
 ---
